@@ -25,7 +25,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 
-	demov1alpha1 "github.com/gaurangkudale/first-operator/api/v1alpha1"
 	myv1 "github.com/gaurangkudale/first-operator/api/v1alpha1"
 )
 
@@ -75,7 +74,7 @@ func (r *MyoperatorReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 // SetupWithManager sets up the controller with the Manager.
 func (r *MyoperatorReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&demov1alpha1.Myoperator{}).
+		For(&myv1.Myoperator{}).
 		Named("myoperator").
 		Complete(r)
 }
