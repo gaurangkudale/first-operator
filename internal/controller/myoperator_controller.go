@@ -18,6 +18,7 @@ package controller
 
 import (
 	"context"
+	"time"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -25,6 +26,7 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 
 	demov1alpha1 "github.com/gaurangkudale/first-operator/api/v1alpha1"
+	myv1 "github.com/gaurangkudale/first-operator/api/v1alpha1"
 )
 
 // MyoperatorReconciler reconciles a Myoperator object
@@ -47,11 +49,27 @@ type MyoperatorReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.21.0/pkg/reconcile
 func (r *MyoperatorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = logf.FromContext(ctx)
+	log := logf.FromContext(ctx)
 
 	// TODO(user): your logic here
+	var instance myv1.Myoperator
+	if err := r.Get(ctx, req.NamespacedName, &instance); err != nil {
+		log.Error(err, "Failed to get Myoperator")
+		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
+	// Log the Message field
+	log.Info("Recociling Myoperator", "name", instance.Name, "message", instance.Spec.Message)
 
-	return ctrl.Result{}, nil
+	// Update status with current time
+	instance.Status.LastProcessedTime = time.Now().Format(time.RFC3339)
+	if err := r.Status().Update(ctx, &instance); err != nil {
+		log.Error(err, "Failed to update Myoperator status")
+		return ctrl.Result{}, err
+	}
+
+	return ctrl.Result{RequeueAfter: 30 * time.Second}, nil
+
+	// return ctrl.Result{}, nil
 }
 
 // SetupWithManager sets up the controller with the Manager.

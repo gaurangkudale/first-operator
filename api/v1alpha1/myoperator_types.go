@@ -28,6 +28,7 @@ type MyoperatorSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
+	Message string `json:"message,omitempty"`
 	// Foo is an example field of Myoperator. Edit myoperator_types.go to remove/update
 	Foo string `json:"foo,omitempty"`
 }
@@ -36,6 +37,7 @@ type MyoperatorSpec struct {
 type MyoperatorStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+	LastProcessedTime string `json:"lastProcessedTime,omitempty"`
 }
 
 // +kubebuilder:object:root=true
