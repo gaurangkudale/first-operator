@@ -1,21 +1,39 @@
-#!/bin/bash
-set -x
+#!/usr/bin/env bash
+set -e
 
-curl -Lo ./kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64
+# Detect architecture (arm64 for Apple Silicon, amd64 for Intel)
+ARCH=$(uname -m)
+if [ "$ARCH" = "arm64" ]; then
+  ARCH_NAME="arm64"
+else
+  ARCH_NAME="amd64"
+fi
+
+# --- KIND ---
+echo "Installing kind for Darwin ($ARCH_NAME)..."
+curl -Lo ./kind "https://kind.sigs.k8s.io/dl/latest/kind-darwin-${ARCH_NAME}"
 chmod +x ./kind
-mv ./kind /usr/local/bin/kind
+sudo mv ./kind /usr/local/bin/kind
 
-curl -L -o kubebuilder https://go.kubebuilder.io/dl/latest/linux/amd64
+# --- Kubebuilder ---
+echo "Installing kubebuilder for Darwin ($ARCH_NAME)..."
+curl -L -o kubebuilder "https://go.kubebuilder.io/dl/latest/darwin/${ARCH_NAME}"
 chmod +x kubebuilder
-mv kubebuilder /usr/local/bin/
+sudo mv kubebuilder /usr/local/bin/
 
+# --- kubectl ---
+echo "Installing kubectl for Darwin ($ARCH_NAME)..."
+# Get the latest stable version
 KUBECTL_VERSION=$(curl -L -s https://dl.k8s.io/release/stable.txt)
-curl -LO "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl"
+
+curl -Lo kubectl "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/darwin/${ARCH_NAME}/kubectl"
 chmod +x kubectl
-mv kubectl /usr/local/bin/kubectl
+sudo mv kubectl /usr/local/bin/kubectl
 
-docker network create -d=bridge --subnet=172.19.0.0/24 kind
+# --- Docker network ---
+docker network create -d=bridge --subnet=172.19.0.0/24 kind || true
 
+# --- Verify installs ---
 kind version
 kubebuilder version
 docker --version
