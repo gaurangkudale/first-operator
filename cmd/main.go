@@ -37,8 +37,10 @@ import (
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
+	demovolumev1alpha1 "github.com/gaurangkudale/first-operator/api/demovolume/v1alpha1"
 	demov1alpha1 "github.com/gaurangkudale/first-operator/api/v1alpha1"
 	"github.com/gaurangkudale/first-operator/internal/controller"
+	demovolumecontroller "github.com/gaurangkudale/first-operator/internal/controller/demovolume"
 	// +kubebuilder:scaffold:imports
 )
 
@@ -51,6 +53,7 @@ func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 
 	utilruntime.Must(demov1alpha1.AddToScheme(scheme))
+	utilruntime.Must(demovolumev1alpha1.AddToScheme(scheme))
 	// +kubebuilder:scaffold:scheme
 }
 
@@ -207,6 +210,13 @@ func main() {
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Myoperator")
+		os.Exit(1)
+	}
+	if err := (&demovolumecontroller.DemovolumeReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "Demovolume")
 		os.Exit(1)
 	}
 	// +kubebuilder:scaffold:builder

@@ -1,0 +1,9 @@
+apiVersion: demovolume.gaurangkudale.github.io/v1alpha1
+kind: Demovolume
+metadata:
+  labels:
+    app.kubernetes.io/name: first-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: demovolume-sample
+spec:
+  # TODO(user): Add fields here

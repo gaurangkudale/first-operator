@@ -3,6 +3,7 @@
 # It should be run by config/default
 resources:
 - bases/demo.gaurangkudale.github.io_myoperators.yaml
+- bases/demovolume.gaurangkudale.github.io_demovolumes.yaml
 # +kubebuilder:scaffold:crdkustomizeresource
 
 patches:
