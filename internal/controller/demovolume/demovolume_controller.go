@@ -68,7 +68,9 @@ func (r *DemovolumeReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	if volume.Spec.Name != volume.Status.Name && volume.Spec.Size != volume.Status.Size {
 		volume.Status.Name = volume.Spec.Name
 		volume.Status.Size = volume.Spec.Size
-		r.Status().Update(ctx, volume)
+		if err := r.Status().Update(ctx, volume); err != nil {
+			return ctrl.Result{}, err
+		}
 	}
 
 	return ctrl.Result{}, nil
