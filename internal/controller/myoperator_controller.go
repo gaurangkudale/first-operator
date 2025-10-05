@@ -57,7 +57,7 @@ func (r *MyoperatorReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 	// Log the Message field
-	log.Info("Recociling Myoperator", "name", instance.Name, "message", instance.Spec.Message)
+	// log.Info("Recociling Myoperator", "name", instance.Name, "message", instance.Spec.Message)
 
 	// Update status with current time
 	instance.Status.LastProcessedTime = time.Now().Format(time.RFC3339)
@@ -66,7 +66,7 @@ func (r *MyoperatorReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		return ctrl.Result{}, err
 	}
 
-	return ctrl.Result{RequeueAfter: 30 * time.Second}, nil
+	return ctrl.Result{RequeueAfter: 60 * time.Minute}, nil
 
 	// return ctrl.Result{}, nil
 }

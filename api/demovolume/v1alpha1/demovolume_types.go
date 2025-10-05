@@ -32,7 +32,9 @@ type DemovolumeSpec struct {
 
 	// foo is an example field of Demovolume. Edit demovolume_types.go to remove/update
 	// +optional
-	Foo *string `json:"foo,omitempty"`
+	Foo  *string `json:"foo,omitempty"`
+	Name string  `json:"name,omitempty"`
+	Size int     `json:"size,omitempty"`
 }
 
 // DemovolumeStatus defines the observed state of Demovolume.
@@ -56,6 +58,8 @@ type DemovolumeStatus struct {
 	// +listMapKey=type
 	// +optional
 	Conditions []metav1.Condition `json:"conditions,omitempty"`
+	Size       int                `json:"size,omitempty"`
+	Name       string             `json:"name,omitempty"`
 }
 
 // +kubebuilder:object:root=true

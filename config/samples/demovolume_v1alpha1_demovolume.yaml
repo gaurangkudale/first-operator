@@ -7,3 +7,5 @@ metadata:
   name: demovolume-sample
 spec:
   # TODO(user): Add fields here
+  name: demovolume-sample
+  size: 1

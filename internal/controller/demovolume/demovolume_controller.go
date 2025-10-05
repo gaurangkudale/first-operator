@@ -19,7 +19,9 @@ package demovolume
 import (
 	"context"
 
+	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
@@ -47,9 +49,27 @@ type DemovolumeReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.22.1/pkg/reconcile
 func (r *DemovolumeReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = logf.FromContext(ctx)
+	log := logf.FromContext(ctx)
 
 	// TODO(user): your logic here
+
+	log.Info("Enter Reconcile r: ", "req: ", req)
+	volume := &demovolumev1alpha1.Demovolume{}
+	if err := r.Get(ctx, types.NamespacedName{Name: req.Name, Namespace: req.Namespace}, volume); err != nil {
+		if errors.IsNotFound(err) {
+			// The resource was deleted after the reconcile request—return and don't requeue
+			return ctrl.Result{}, nil
+		}
+		// Requeue if there was another error
+		return ctrl.Result{}, err
+	}
+	log.Info("Enter Reconcile: ", "spec:", volume.Spec, "status:", volume.Status, "Kind: ", volume.Kind)
+
+	if volume.Spec.Name != volume.Status.Name && volume.Spec.Size != volume.Status.Size {
+		volume.Status.Name = volume.Spec.Name
+		volume.Status.Size = volume.Spec.Size
+		r.Status().Update(ctx, volume)
+	}
 
 	return ctrl.Result{}, nil
 }

@@ -30,3 +30,29 @@ rules:
   - get
   - patch
   - update
+- apiGroups:
+  - demovolume.gaurangkudale.github.io
+  resources:
+  - demovolumes
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - demovolume.gaurangkudale.github.io
+  resources:
+  - demovolumes/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - demovolume.gaurangkudale.github.io
+  resources:
+  - demovolumes/status
+  verbs:
+  - get
+  - patch
+  - update
